@@ -155,11 +155,7 @@
     <ClCompile Include="parser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="license" />
     <Text Include="main.c8" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

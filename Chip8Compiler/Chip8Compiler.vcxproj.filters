@@ -48,9 +48,5 @@
     <Text Include="main.c8">
       <Filter>Test Files</Filter>
     </Text>
-    <Text Include="license" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="readme.md" />
   </ItemGroup>
 </Project>
