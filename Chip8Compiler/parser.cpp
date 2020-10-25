@@ -22,6 +22,7 @@ namespace Chip8Compiler
     Parser::Parser()
     {
         m_scope.push(ScopeType::Base);
+        m_currentFunction = nullptr;
         m_currentSection = None;
     }
 
@@ -104,7 +105,7 @@ namespace Chip8Compiler
                             if (token.getType() == Token::Type::Identifier)
                                 arguments.push_back(token.getContent());
 
-                        m_currentFunction = new Statements::Function(functionName, arguments);
+                        m_currentFunction = std::shared_ptr<Statements::FunctionDeclaration>(new Statements::FunctionDeclaration(functionName, arguments));
                         ast.addStatement(Section::SectionType::Code, m_currentFunction);
                         m_scope.push(ScopeType::Function);
                     }
@@ -150,7 +151,7 @@ namespace Chip8Compiler
                                 "Unexpected token \"" + token.getContent() + "\" after variable declaration at position " + token.getPosition() + ".";
                             break;
                         }
-                        ast.addStatement(Section::SectionType::Code, new Statements::VariableDeclaration(variableName, variableValue));
+                        ast.addStatement(Section::SectionType::Code, std::unique_ptr<Statements::VariableDeclaration>(new Statements::VariableDeclaration(variableName, variableValue)));
                     }
 
 
@@ -178,7 +179,7 @@ namespace Chip8Compiler
                                 spriteData.push_back(row.to_ulong());
                                 token = tokens[++i];
                             }
-                            ast.addStatement(Section::SectionType::Sprites, new Statements::SpriteDeclaration(spriteData, spriteName));
+                            ast.addStatement(Section::SectionType::Sprites, std::unique_ptr<Statements::SpriteDeclaration>(new Statements::SpriteDeclaration(spriteData, spriteName)));
                             break;
                         }
                     }

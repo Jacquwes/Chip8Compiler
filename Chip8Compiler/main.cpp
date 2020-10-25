@@ -81,17 +81,17 @@ int main(int argc, char** argv)
 	}
 
 	std::vector<Chip8Compiler::Statements::SpriteDeclaration*> sprites;
-	std::vector<Chip8Compiler::Statements::Function*> functions;
+	std::vector<Chip8Compiler::Statements::FunctionDeclaration*> functions;
 	std::vector<Chip8Compiler::Statements::VariableDeclaration*> variables;
 
 	for (auto& section : ast.getSections())
 		for (auto& instruction : section->instructions)
-			if (instruction->getType() == Chip8Compiler::Statement::Type::Function)
-				functions.push_back((Chip8Compiler::Statements::Function*)instruction);
+			if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionDeclaration)
+				functions.push_back((Chip8Compiler::Statements::FunctionDeclaration*)instruction.get());
 			else if (instruction->getType() == Chip8Compiler::Statement::Type::SpriteDeclaration)
-				sprites.push_back((Chip8Compiler::Statements::SpriteDeclaration*)instruction);
+				sprites.push_back((Chip8Compiler::Statements::SpriteDeclaration*)instruction.get());
 			else if (instruction->getType() == Chip8Compiler::Statement::Type::VariableDeclaration)
-				variables.push_back((Chip8Compiler::Statements::VariableDeclaration*)instruction);
+				variables.push_back((Chip8Compiler::Statements::VariableDeclaration*)instruction.get());
 
 	std::cout << "Parser returned no error." << std::endl;
 }

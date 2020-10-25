@@ -17,20 +17,35 @@
 
 #pragma once
 
-#include "common.h"
 #include "abstractsyntaxtree.h"
+#include "common.h"
 
 namespace Chip8Compiler
 {
 	namespace Statements
 	{
-		class Function : public Statement
+		class FunctionArgument;
+
+		class FunctionCall : public Statement
 		{
 		public:
-			Function(const std::string& name_, const std::vector<std::string>& arguments_)
+			FunctionCall(const std::string& functionName_, const std::vector<FunctionArgument>& arguments_)
+				: arguments(arguments_)
+				, functionName(functionName_)
+				, Statement(Type::FunctionCall)
+			{}
+
+			std::vector<FunctionArgument> arguments;
+			std::string functionName;
+		};
+
+		class FunctionDeclaration : public Statement
+		{
+		public:
+			FunctionDeclaration(const std::string& name_, const std::vector<std::string>& arguments_)
 				: arguments(arguments_)
 				, name(name_)
-				, Statement(Type::Function)
+				, Statement(Type::FunctionDeclaration)
 			{}
 
 			std::vector<std::string> arguments;
@@ -74,6 +89,16 @@ namespace Chip8Compiler
 			std::string name;
 		};
 
+		class VariableCall : public Statement
+		{
+			VariableCall(const std::string& name_)
+				: name(name_)
+				, Statement(Type::VariableCall)
+			{}
+
+			std::string name;
+		};
+
 		class VariableDeclaration : public Statement
 		{
 		public:
@@ -85,6 +110,25 @@ namespace Chip8Compiler
 
 			std::string name;
 			uint16_t value;
+		};
+
+		class FunctionArgument : public Statement
+		{
+			enum class ArgumentType
+			{
+				FunctionCall,
+				Number,
+				VariableCall,
+			} argumentType;
+
+			std::optional<FunctionCall> functionCall;
+			std::optional<uint16_t> number;
+			std::optional<VariableCall> variableCall;
+
+			FunctionArgument(const ArgumentType& argumentType_)
+				: argumentType(argumentType_)
+				, Statement(Type::FunctionArgument)
+			{}
 		};
 	}
 }

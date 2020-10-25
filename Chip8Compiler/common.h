@@ -23,9 +23,11 @@
 #pragma warning(disable: 26812)
 
 #include <bitset>
+#include <concepts>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <stack>
 #include <string>
 #include <vector>

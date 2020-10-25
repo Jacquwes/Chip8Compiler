@@ -48,6 +48,6 @@ namespace Chip8Compiler
 			Sprites,
 		} m_currentSection;
 
-		Statements::Function* m_currentFunction;
+		std::shared_ptr<Statements::FunctionDeclaration> m_currentFunction;
 	};
 }

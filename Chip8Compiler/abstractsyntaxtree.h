@@ -27,10 +27,13 @@ namespace Chip8Compiler
 	public:
 		enum class Type
 		{
-			Function,
+			FunctionArgument,
+			FunctionCall,
+			FunctionDeclaration,
 			Operation,
 			Section,
 			SpriteDeclaration,
+			VariableCall,
 			VariableDeclaration,
 		};
 
@@ -54,7 +57,7 @@ namespace Chip8Compiler
 		Section(const SectionType& type) : sectionType(type) {}
 
 		SectionType sectionType;
-		std::vector<Statement*> instructions;
+		std::vector<std::shared_ptr<Statement>> instructions;
 	};
 
 	class AST
@@ -62,18 +65,18 @@ namespace Chip8Compiler
 	public:
 		inline AST()
 		{
-			m_sections.push_back(new Section(Section::SectionType::Code));
-			m_sections.push_back(new Section(Section::SectionType::Sprites));
+			m_sections.push_back(std::unique_ptr<Section>(new Section(Section::SectionType::Code)));
+			m_sections.push_back(std::unique_ptr<Section>(new Section(Section::SectionType::Sprites)));
 		}
 
-		inline void addStatement(const Section::SectionType& section, Statement* statement)
+		inline void addStatement(const Section::SectionType& section, const std::shared_ptr<Statement>& statement)
 		{
 			m_sections[static_cast<size_t>(section)]->instructions.push_back(statement);
 		}
 
-		inline std::vector<Section*> getSections() { return m_sections; }
+		inline const std::vector<std::unique_ptr<Section>>& getSections() { return m_sections; }
 
 	private:
-		std::vector<Section*> m_sections;
+		std::vector<std::unique_ptr<Section>> m_sections;
 	};
 }
