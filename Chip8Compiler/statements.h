@@ -53,6 +53,17 @@ namespace Chip8Compiler
 			std::vector<Statement*> statements;
 		};
 
+		class Number : public Statement
+		{
+		public:
+			Number(const int16_t& value_)
+				: value(value_)
+				, Statement(Type::Number)
+			{}
+
+			int16_t value;
+		};
+
 		class Operation : public Statement
 		{
 		public:
@@ -64,16 +75,21 @@ namespace Chip8Compiler
 				LogicAnd,
 				LogicNot,
 				LogicOr,
+				Modulus,
 				Multiplication,
 				Not,
 				Or,
 				Soustraction,
 			};
 
-			Operation(const OperationType& type) : Statement(Type::Operation), operationType(type) {}
+			Operation(std::vector<OperationType> operators_, const std::vector<std::shared_ptr<Statement>>& operands_)
+				: operators(operators_)
+				, operands(operands_)
+				, Statement(Type::Operation)
+			{}
 
-			std::pair<int16_t, int16_t> operands;
-			OperationType operationType;
+			std::vector<OperationType> operators;
+			std::vector<std::shared_ptr<Statement>> operands;
 		};
 
 		class SpriteDeclaration : public Statement
@@ -91,6 +107,7 @@ namespace Chip8Compiler
 
 		class VariableCall : public Statement
 		{
+		public:
 			VariableCall(const std::string& name_)
 				: name(name_)
 				, Statement(Type::VariableCall)
@@ -102,14 +119,14 @@ namespace Chip8Compiler
 		class VariableDeclaration : public Statement
 		{
 		public:
-			VariableDeclaration(const std::string& name_, const uint16_t& value_)
+			VariableDeclaration(const std::string& name_, const std::shared_ptr<Operation>& value_)
 				: name(name_)
 				, value(value_)
 				, Statement(Type::VariableDeclaration)
 			{}
 
 			std::string name;
-			uint16_t value;
+			std::shared_ptr<Operation> value;
 		};
 
 		class FunctionArgument : public Statement

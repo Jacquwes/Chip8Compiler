@@ -106,6 +106,9 @@ namespace Chip8Compiler
 			case '&':
 				t = tt::And;
 				break;
+			case '*':
+				t = tt::Asterisk;
+				break;
 			case ',':
 				t = tt::Comma;
 				break;

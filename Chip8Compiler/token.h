@@ -27,6 +27,7 @@ namespace Chip8Compiler
 		enum class Type
 		{
 			And,
+			Asterisk,
 			Comma,
 			Comment,
 			DifferentTo,

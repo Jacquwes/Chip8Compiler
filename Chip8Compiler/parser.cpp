@@ -98,6 +98,7 @@ namespace Chip8Compiler
                                 "Expected \"(\" but got \"" + token.getContent() + "\" at position" + token.getPosition() + ".";
                         }
 
+                        // TODO ARGS
                         std::vector<std::string> arguments;
                         for (token = tokens[++i];
                             (token.getType() == Token::Type::Identifier || token.getType() == Token::Type::Comma ) && token.getType() != Token::Type::RightParenthesis;
@@ -112,7 +113,7 @@ namespace Chip8Compiler
 
 
 
-                    if (token.getContent() == "var") // VARIABLE DECLARATION
+                    if (token.getContent() == "var") // VARIABLE DECLARATION TODO
                     {
                         token = tokens[++i];
                         std::string variableName;
@@ -125,27 +126,23 @@ namespace Chip8Compiler
                             throw std::exception(errorMessage.data());
                         }
 
-                        uint16_t variableValue;
+                        std::shared_ptr<Statements::Operation> variableValue;
                         switch (tokens[++i].getType())
                         {
                         case Token::Type::SemiColon:
-                            variableValue = 0;
+                            variableValue =
+                                std::shared_ptr<Statements::Operation>(
+                                    new Statements::Operation(
+                                        {},
+                                        { std::shared_ptr<Statement>(new Statements::Number(0)) }
+                                    )
+                                );
                             break;
                         case Token::Type::Equal:
-                            token = tokens[++i];
-                            switch (token.getType())
-                            {
-                            case Token::Type::Number:
-                                variableValue = std::stoi(token.getContent());
-                                break;
-                            case Token::Type::Identifier: // TODO : FUNCTION CALL OR VARIABLE OR OPERATION
-                                break;
-                            default:
-                                std::string errorMessage =
-                                    "Unexpected token \"" + token.getContent() + "\" after variable declaration at position " + token.getPosition() + ".";
-                                throw std::exception(errorMessage.data());
-                            }
+                        {
+                            variableValue = m_parseOperation(tokens, i);
                             break;
+                        }
                         default:
                             std::string errorMessage =
                                 "Unexpected token \"" + token.getContent() + "\" after variable declaration at position " + token.getPosition() + ".";
