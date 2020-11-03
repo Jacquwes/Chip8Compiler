@@ -153,6 +153,10 @@ namespace Chip8Compiler
 
 
 
+                    // todo: function call
+
+
+
                     break;
                 case Chip8Compiler::Parser::Sprites:
                     switch (token.getType())

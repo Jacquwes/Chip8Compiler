@@ -24,18 +24,18 @@ namespace Chip8Compiler
 {
 	namespace Statements
 	{
-		class FunctionArgument;
+		class Operation;
 
 		class FunctionCall : public Statement
 		{
 		public:
-			FunctionCall(const std::string& functionName_, const std::vector<FunctionArgument>& arguments_)
+			FunctionCall(const std::string& functionName_, const std::vector<std::shared_ptr<Operation>>& arguments_)
 				: arguments(arguments_)
 				, functionName(functionName_)
 				, Statement(Type::FunctionCall)
 			{}
 
-			std::vector<FunctionArgument> arguments;
+			std::vector<std::shared_ptr<Operation>> arguments;
 			std::string functionName;
 		};
 
@@ -127,25 +127,6 @@ namespace Chip8Compiler
 
 			std::string name;
 			std::shared_ptr<Operation> value;
-		};
-
-		class FunctionArgument : public Statement
-		{
-			enum class ArgumentType
-			{
-				FunctionCall,
-				Number,
-				VariableCall,
-			} argumentType;
-
-			std::optional<FunctionCall> functionCall;
-			std::optional<uint16_t> number;
-			std::optional<VariableCall> variableCall;
-
-			FunctionArgument(const ArgumentType& argumentType_)
-				: argumentType(argumentType_)
-				, Statement(Type::FunctionArgument)
-			{}
 		};
 	}
 }

@@ -3,6 +3,24 @@
 
 namespace Chip8Compiler
 {
+    std::shared_ptr<Statements::FunctionCall> Parser::m_parseFunctionCall(std::vector<Token> tokens, int& i)
+    {
+        Token token = tokens[i++];
+
+        std::vector<std::shared_ptr<Statements::Operation>> arguments;
+        std::string name = token.getContent();
+
+        token = tokens[i];
+
+        while (token.getType() != Token::Type::RightParenthesis)
+        {
+            arguments.push_back(m_parseOperation(tokens, i));
+        }
+
+        return std::shared_ptr<Statements::FunctionCall>(new Statements::FunctionCall(name, arguments));
+    }
+
+
 	std::shared_ptr<Statements::Operation> Parser::m_parseOperation(std::vector<Token> tokens, int& i)
 	{
         Token token = tokens[++i];
@@ -10,7 +28,9 @@ namespace Chip8Compiler
         std::vector<Statements::Operation::OperationType> operators;
         std::vector<std::shared_ptr<Statement>> operands;
 
-        while (token.getType() != Token::Type::SemiColon)
+        while (token.getType() != Token::Type::SemiColon
+            && token.getType() != Token::Type::Comma
+            && token.getType() != Token::Type::RightParenthesis)
         {
             if (operators.size() == operands.size())
             {
@@ -56,11 +76,13 @@ namespace Chip8Compiler
                     break;
                 default:
                     std::string errorMessage =
-                        "Unknown token \"" + token.getContent() + "\" in variable declaration at position " + token.getPosition() + ".";
+                        "Unknown token \"" + token.getContent() + "\" at position " + token.getPosition() + ".";
                     throw std::exception(errorMessage.data());
                     break;
                 }
             }
+
+            token = tokens[++i];
         }
 
         return std::shared_ptr<Statements::Operation>(new Statements::Operation(operators, operands));
