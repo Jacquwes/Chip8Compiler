@@ -32,6 +32,7 @@ namespace Chip8Compiler
 			FunctionDeclaration,
 			Operation,
 			Number,
+			Return,
 			Section,
 			SpriteDeclaration,
 			VariableCall,

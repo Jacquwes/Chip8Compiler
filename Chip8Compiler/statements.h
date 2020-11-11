@@ -92,6 +92,17 @@ namespace Chip8Compiler
 			std::vector<std::shared_ptr<Statement>> operands;
 		};
 
+		class Return : public Statement
+		{
+		public:
+			Return(std::shared_ptr<Operation> value_)
+				: value(value_)
+				, Statement(Type::Return)
+			{}
+
+				std::shared_ptr<Operation> value;
+		};
+
 		class SpriteDeclaration : public Statement
 		{
 		public:

@@ -179,6 +179,8 @@ namespace Chip8Compiler
                 {
                     if (token.getContent() == "var")
                         m_currentFunction->statements.push_back(m_parseVariableDeclaration(tokens, i));
+                    else if (token.getContent() == "return")
+                        m_currentFunction->statements.push_back(m_parseOperation(tokens, i));
                     else if (tokens[i + 1].getType() == Token::Type::LeftParenthesis)
                         m_currentFunction->statements.push_back(m_parseFunctionCall(tokens, i));
                     else
