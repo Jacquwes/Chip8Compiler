@@ -50,7 +50,7 @@ namespace Chip8Compiler
 
 			std::vector<std::string> arguments;
 			std::string name;
-			std::vector<Statement*> statements;
+			std::vector<std::shared_ptr<Statement>> statements;
 		};
 
 		class Number : public Statement

@@ -87,4 +87,43 @@ namespace Chip8Compiler
 
         return std::shared_ptr<Statements::Operation>(new Statements::Operation(operators, operands));
 	}
+
+    std::shared_ptr<Statements::VariableDeclaration> Parser::m_parseVariableDeclaration(std::vector<Token> tokens, int& i)
+    {
+        Token token = tokens[++i];
+        std::string variableName;
+        if (token.getType() == Token::Type::Identifier)
+            variableName = token.getContent();
+        else
+        {
+            std::string errorMessage =
+                "Unexpected variable name \"" + token.getContent() + "\" at position " + token.getPosition() + ".";
+            throw std::exception(errorMessage.data());
+        }
+
+        std::shared_ptr<Statements::Operation> variableValue;
+        switch (tokens[++i].getType())
+        {
+        case Token::Type::SemiColon:
+            variableValue =
+                std::shared_ptr<Statements::Operation>(
+                    new Statements::Operation(
+                        {},
+                        { std::shared_ptr<Statement>(new Statements::Number(0)) }
+                    )
+                    );
+            break;
+        case Token::Type::Equal:
+        {
+            variableValue = m_parseOperation(tokens, i);
+            break;
+        }
+        default:
+            std::string errorMessage =
+                "Unexpected token \"" + token.getContent() + "\" after variable declaration at position " + token.getPosition() + ".";
+            break;
+        }
+
+        return std::shared_ptr<Statements::VariableDeclaration>(new Statements::VariableDeclaration(variableName, variableValue));
+    }
 }

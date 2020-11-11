@@ -48,9 +48,9 @@ namespace Chip8Compiler
 			Sprites,
 		} m_currentSection;
 
-		// TODO
 		std::shared_ptr<Statements::FunctionCall> m_parseFunctionCall(std::vector<Token> tokens, int& i);
 		std::shared_ptr<Statements::Operation> m_parseOperation(std::vector<Token> tokens, int& i);
+		std::shared_ptr<Statements::VariableDeclaration> m_parseVariableDeclaration(std::vector<Token>, int& i);
 
 		std::shared_ptr<Statements::FunctionDeclaration> m_currentFunction;
 	};

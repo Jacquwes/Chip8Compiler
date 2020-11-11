@@ -75,7 +75,7 @@ namespace Chip8Compiler
                 switch (m_currentSection)
                 {
                 case Chip8Compiler::Parser::Code: // TODO
-
+                {
 
 
                     if (token.getContent() == "function")
@@ -101,7 +101,7 @@ namespace Chip8Compiler
                         // TODO ARGS
                         std::vector<std::string> arguments;
                         for (token = tokens[++i];
-                            (token.getType() == Token::Type::Identifier || token.getType() == Token::Type::Comma ) && token.getType() != Token::Type::RightParenthesis;
+                            (token.getType() == Token::Type::Identifier || token.getType() == Token::Type::Comma) && token.getType() != Token::Type::RightParenthesis;
                             token = tokens[++i])
                             if (token.getType() == Token::Type::Identifier)
                                 arguments.push_back(token.getContent());
@@ -113,51 +113,14 @@ namespace Chip8Compiler
 
 
 
-                    if (token.getContent() == "var") // VARIABLE DECLARATION TODO
+                    if (token.getContent() == "var")
                     {
-                        token = tokens[++i];
-                        std::string variableName;
-                        if (token.getType() == Token::Type::Identifier)
-                            variableName = token.getContent();
-                        else
-                        {
-                            std::string errorMessage =
-                                "Unexpected variable name \"" + token.getContent() + "\" at position " + token.getPosition() + ".";
-                            throw std::exception(errorMessage.data());
-                        }
-
-                        std::shared_ptr<Statements::Operation> variableValue;
-                        switch (tokens[++i].getType())
-                        {
-                        case Token::Type::SemiColon:
-                            variableValue =
-                                std::shared_ptr<Statements::Operation>(
-                                    new Statements::Operation(
-                                        {},
-                                        { std::shared_ptr<Statement>(new Statements::Number(0)) }
-                                    )
-                                );
-                            break;
-                        case Token::Type::Equal:
-                        {
-                            variableValue = m_parseOperation(tokens, i);
-                            break;
-                        }
-                        default:
-                            std::string errorMessage =
-                                "Unexpected token \"" + token.getContent() + "\" after variable declaration at position " + token.getPosition() + ".";
-                            break;
-                        }
-                        ast.addStatement(Section::SectionType::Code, std::unique_ptr<Statements::VariableDeclaration>(new Statements::VariableDeclaration(variableName, variableValue)));
+                        ast.addStatement(Section::SectionType::Code, m_parseVariableDeclaration(tokens, i ));
                     }
 
 
-
-                    // todo: function call
-
-
-
                     break;
+                }
                 case Chip8Compiler::Parser::Sprites:
                     switch (token.getType())
                     {
@@ -211,6 +174,11 @@ namespace Chip8Compiler
             {
                 switch (token.getType())
                 {
+                case Token::Type::Identifier:
+                {
+                    if (token.getContent() == "var")
+                        m_currentFunction->statements.push_back(m_parseVariableDeclaration(tokens, i));
+                }
                 case Token::Type::RightCurlyBrace:
                 {
                     m_scope.pop();
