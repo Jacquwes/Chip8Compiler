@@ -182,7 +182,10 @@ namespace Chip8Compiler
                     else if (token.getContent() == "return")
                         m_currentFunction->statements.push_back(m_parseOperation(tokens, i));
                     else if (tokens[i + 1].getType() == Token::Type::LeftParenthesis)
+                    {
                         m_currentFunction->statements.push_back(m_parseFunctionCall(tokens, i));
+                        ++i; // ;
+                    }
                     else
                     {
                         std::string errorMessage =

@@ -15,6 +15,7 @@ namespace Chip8Compiler
         while (token.getType() != Token::Type::RightParenthesis)
         {
             arguments.push_back(m_parseOperation(tokens, i));
+            token = tokens[i];
         }
 
         return std::shared_ptr<Statements::FunctionCall>(new Statements::FunctionCall(name, arguments));

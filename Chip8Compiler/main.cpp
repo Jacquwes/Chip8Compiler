@@ -21,14 +21,11 @@
 
 int main(int argc, char** argv)
 {
-
-
 	std::cout
 		<< "Chip8Compiler  Copyright (C) 2020  Jacques" << std::endl
 		<< "This program comes with ABSOLUTELY NO WARRANTY." << std::endl
 		<< "This is free software, and you are welcome to redistribute it" << std::endl
 		<< "under certain conditions. Read license for more details." << std::endl << std::endl;
-
 
 	bool error = false;
 
@@ -38,12 +35,11 @@ int main(int argc, char** argv)
 	for (char temp; file.read(&temp, sizeof(temp));)
 		program.push_back(temp);
 
-
 	Chip8Compiler::Lexer lexer(program);
 	std::vector<Chip8Compiler::Token> tokens;
 
 	std::cout << "Starting lexer." << std::endl;
-	
+
 	for (Chip8Compiler::Token token = lexer.next();
 		token.getType() != Chip8Compiler::Token::Type::EndOfFile;
 		token = lexer.next())
@@ -67,34 +63,32 @@ int main(int argc, char** argv)
 
 	std::cout << "Starting parser." << std::endl;
 
-
 	Chip8Compiler::Parser parser;
 	Chip8Compiler::AST ast;
 	try
 	{
 		ast = parser.parse(tokens);
+
+		std::vector<Chip8Compiler::Statements::SpriteDeclaration*> sprites;
+		std::vector<Chip8Compiler::Statements::FunctionDeclaration*> functions;
+		std::vector<Chip8Compiler::Statements::VariableDeclaration*> variables;
+		std::vector<Chip8Compiler::Statements::FunctionCall*> calls;
+
+		for (auto& section : ast.getSections())
+			for (auto& instruction : section->instructions)
+				if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionDeclaration)
+					functions.push_back((Chip8Compiler::Statements::FunctionDeclaration*)instruction.get());
+				else if (instruction->getType() == Chip8Compiler::Statement::Type::SpriteDeclaration)
+					sprites.push_back((Chip8Compiler::Statements::SpriteDeclaration*)instruction.get());
+				else if (instruction->getType() == Chip8Compiler::Statement::Type::VariableDeclaration)
+					variables.push_back((Chip8Compiler::Statements::VariableDeclaration*)instruction.get());
+				else if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionCall)
+					calls.push_back((Chip8Compiler::Statements::FunctionCall*)instruction.get());
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 		return 1;
 	}
-
-	std::vector<Chip8Compiler::Statements::SpriteDeclaration*> sprites;
-	std::vector<Chip8Compiler::Statements::FunctionDeclaration*> functions;
-	std::vector<Chip8Compiler::Statements::VariableDeclaration*> variables;
-	std::vector<Chip8Compiler::Statements::FunctionCall*> calls;
-
-	for (auto& section : ast.getSections())
-		for (auto& instruction : section->instructions)
-			if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionDeclaration)
-				functions.push_back((Chip8Compiler::Statements::FunctionDeclaration*)instruction.get());
-			else if (instruction->getType() == Chip8Compiler::Statement::Type::SpriteDeclaration)
-				sprites.push_back((Chip8Compiler::Statements::SpriteDeclaration*)instruction.get());
-			else if (instruction->getType() == Chip8Compiler::Statement::Type::VariableDeclaration)
-				variables.push_back((Chip8Compiler::Statements::VariableDeclaration*)instruction.get());
-			else if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionCall)
-				calls.push_back((Chip8Compiler::Statements::FunctionCall*)instruction.get());
-
 	std::cout << "Parser returned no error." << std::endl;
 }

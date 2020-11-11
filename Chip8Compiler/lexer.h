@@ -25,7 +25,11 @@ namespace Chip8Compiler
 	class Lexer
 	{
 	public:
-		inline Lexer(const std::string& program) : m_program(program), m_programCounter(0) {}
+		inline Lexer(const std::string& program)
+			: m_program(program)
+			, m_programCounter(0)
+			, m_position({ 1, 1 })
+		{}
 
 		enum CharacterType
 		{
@@ -52,11 +56,11 @@ namespace Chip8Compiler
 			{
 				if (m_program[m_programCounter] == '\n')
 				{
-					++m_position.second;
-					m_position.first = 1;
+					++m_position.first;
+					m_position.second = 1;
 				}
 				else
-					++m_position.first;
+					++m_position.second;
 			}
 			return m_program[increment ? m_programCounter++ : m_programCounter]; 
 		}
