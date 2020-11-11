@@ -106,6 +106,7 @@ namespace Chip8Compiler
                             if (token.getType() == Token::Type::Identifier)
                                 arguments.push_back(token.getContent());
 
+                        ++i; // {
                         m_currentFunction = std::shared_ptr<Statements::FunctionDeclaration>(new Statements::FunctionDeclaration(functionName, arguments));
                         ast.addStatement(Section::SectionType::Code, m_currentFunction);
                         m_scope.push(ScopeType::Function);
@@ -178,6 +179,15 @@ namespace Chip8Compiler
                 {
                     if (token.getContent() == "var")
                         m_currentFunction->statements.push_back(m_parseVariableDeclaration(tokens, i));
+                    else if (tokens[i + 1].getType() == Token::Type::LeftParenthesis)
+                        m_currentFunction->statements.push_back(m_parseFunctionCall(tokens, i));
+                    else
+                    {
+                        std::string errorMessage =
+                            "Unknown token \"" + token.getContent() + "\" in function scope at position " + token.getPosition() + ".";
+                        throw std::exception(errorMessage.data());
+                    }
+                    break;
                 }
                 case Token::Type::RightCurlyBrace:
                 {
@@ -187,6 +197,9 @@ namespace Chip8Compiler
                     break;
                 }
                 default:
+                    std::string errorMessage =
+                        "Unknown token \"" + token.getContent() + "\" in function scope at position " + token.getPosition() + ".";
+                    throw std::exception(errorMessage.data());
                     break;
                 }
 
