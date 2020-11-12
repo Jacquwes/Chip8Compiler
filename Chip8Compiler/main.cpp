@@ -68,27 +68,28 @@ int main(int argc, char** argv)
 	try
 	{
 		ast = parser.parse(tokens);
-
-		std::vector<Chip8Compiler::Statements::SpriteDeclaration*> sprites;
-		std::vector<Chip8Compiler::Statements::FunctionDeclaration*> functions;
-		std::vector<Chip8Compiler::Statements::VariableDeclaration*> variables;
-		std::vector<Chip8Compiler::Statements::FunctionCall*> calls;
-
-		for (auto& section : ast.getSections())
-			for (auto& instruction : section->instructions)
-				if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionDeclaration)
-					functions.push_back((Chip8Compiler::Statements::FunctionDeclaration*)instruction.get());
-				else if (instruction->getType() == Chip8Compiler::Statement::Type::SpriteDeclaration)
-					sprites.push_back((Chip8Compiler::Statements::SpriteDeclaration*)instruction.get());
-				else if (instruction->getType() == Chip8Compiler::Statement::Type::VariableDeclaration)
-					variables.push_back((Chip8Compiler::Statements::VariableDeclaration*)instruction.get());
-				else if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionCall)
-					calls.push_back((Chip8Compiler::Statements::FunctionCall*)instruction.get());
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 		return 1;
 	}
+
+	std::vector<Chip8Compiler::Statements::SpriteDeclaration*> sprites;
+	std::vector<std::shared_ptr<Chip8Compiler::Statements::FunctionDeclaration>> functions;
+	std::vector<Chip8Compiler::Statements::VariableDeclaration*> variables;
+	std::vector<Chip8Compiler::Statements::FunctionCall*> calls;
+
+	for (auto& section : ast.getSections())
+		for (auto& instruction : section->instructions)
+			if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionDeclaration)
+				functions.push_back(std::dynamic_pointer_cast<Chip8Compiler::Statements::FunctionDeclaration>(instruction));
+			else if (instruction->getType() == Chip8Compiler::Statement::Type::SpriteDeclaration)
+				sprites.push_back((Chip8Compiler::Statements::SpriteDeclaration*)instruction.get());
+			else if (instruction->getType() == Chip8Compiler::Statement::Type::VariableDeclaration)
+				variables.push_back((Chip8Compiler::Statements::VariableDeclaration*)instruction.get());
+			else if (instruction->getType() == Chip8Compiler::Statement::Type::FunctionCall)
+				calls.push_back((Chip8Compiler::Statements::FunctionCall*)instruction.get());
+
 	std::cout << "Parser returned no error." << std::endl;
 }

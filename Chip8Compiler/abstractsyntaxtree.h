@@ -40,6 +40,7 @@ namespace Chip8Compiler
 		};
 
 		Statement(const Type& type) : m_type(type) {}
+		virtual ~Statement() = default;
 
 		Type getType() { return m_type; }
 
