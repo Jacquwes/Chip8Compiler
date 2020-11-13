@@ -26,8 +26,10 @@
 #include <concepts>
 #include <cstdint>
 #include <fstream>
+#include <functional>
 #include <iostream>
-#include <optional>
+#include <unordered_map>
+#include <random>
 #include <stack>
 #include <string>
 #include <vector>

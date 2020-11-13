@@ -27,7 +27,6 @@ namespace Chip8Compiler
 	public:
 		enum class Type
 		{
-			FunctionArgument,
 			FunctionCall,
 			FunctionDeclaration,
 			Operation,

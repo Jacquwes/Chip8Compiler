@@ -35,6 +35,9 @@
     <ClInclude Include="concepts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="compiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp">
@@ -47,6 +50,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="parserfunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compilerdefaultfunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
